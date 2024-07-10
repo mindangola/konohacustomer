@@ -1,9 +1,14 @@
+import { FolderList } from '@/components/app/Home/FolderList'
+import { Galery } from '@/components/app/Home/Galery'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Image from 'next/image'
+import { Suspense } from 'react'
 
-export default async function Home() {
-  // const fetchApi = new FetchApi()
-  // const folders = await fetchApi.getImages('')
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: { folder: string }
+}) {
   return (
     <main className="flex min-h-screen bg-gray-950 w-full flex-col items-center">
       <header className="h-20 bg-gray-850 w-full ">
@@ -48,45 +53,16 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="w-full">
+      <section className="w-full ">
         <div className="max-w-7xl mx-auto">
           <div className="w-full bg-gray-850 -mt-28 z-20 relative p-10 rounded-lg">
             {/* <FolderFilter /> */}
-
-            <div className="flex items-center gap-4">
-              {Array.from({ length: 5 }).map((value, index) => (
-                <div
-                  key={index}
-                  className="w-full h-[50px] px-4 py-2 gap-2 text-white  flex bg-gray-600 items-center overflow-hidden rounded-md"
-                >
-                  <Image
-                    src={`/folder.svg`}
-                    alt="folder image"
-                    width={40}
-                    height={100}
-                    className="h-auto w-10 object-cover"
-                  />
-
-                  <p>Casamento {index + 1}</p>
-                </div>
-              ))}
-            </div>
-            <div className="grid grid-cols-4 gap-4 mt-10">
-              {Array.from({ length: 24 }).map((value, index) => (
-                <div
-                  key={index}
-                  className="w-full h-[300px] bg-white overflow-hidden rounded-md"
-                >
-                  <Image
-                    src={`/pro2/${index + 1}.jpeg`}
-                    alt=""
-                    width={2000}
-                    height={1800}
-                    className="h-full object-cover"
-                  />
-                </div>
-              ))}
-            </div>
+            <Suspense fallback="loading...">
+              <FolderList />
+            </Suspense>
+            <Suspense fallback="loading...">
+              <Galery folderId={searchParams.folder} />
+            </Suspense>
           </div>
         </div>
       </section>

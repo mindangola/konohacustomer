@@ -29,7 +29,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   async function signIn({ email, password }: SignInData) {
     try {
       setIsLoading(true)
-      const response = await api.post('/tenants/login', { email, password })
+      const response = await api.post('customer/login', { email, password })
 
       const { token } = response.data
 
