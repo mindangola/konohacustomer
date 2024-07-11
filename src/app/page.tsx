@@ -1,41 +1,47 @@
 import { FolderList } from '@/components/app/Home/FolderList'
 import { Galery } from '@/components/app/Home/Galery'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Header } from '@/components/app/shared/Header'
+import { FetchApi, Image as ImageType } from '@/services/fetch'
+import generateRGBDataUrl from '@/utils/generateBlurPlaceholder'
 import Image from 'next/image'
 import { Suspense } from 'react'
+
+interface NewImages extends ImageType {
+  blurDataUrl: string
+}
 
 export default async function Home({
   searchParams,
 }: {
   searchParams: { folder: string }
 }) {
+  const fetchApi = new FetchApi()
+  const images = await fetchApi.getImages(searchParams.folder)
+
+  const blurImagePromises = images?.map(() => {
+    function getRandomRGB() {
+      const r = Math.floor(Math.random() * 256) // Gera um valor entre 0 e 255
+      const g = Math.floor(Math.random() * 256)
+      const b = Math.floor(Math.random() * 256)
+      return { r, g, b }
+    }
+
+    const { r, g, b } = getRandomRGB()
+
+    return generateRGBDataUrl(r, g, b)
+  })
+
+  const imagesWithBlurDataUrls = await Promise.all(blurImagePromises)
+
+  const newImages = [...images] as NewImages[]
+
+  for (let i = 0; i < images.length; i++) {
+    newImages[i].blurDataUrl = imagesWithBlurDataUrls[i]
+  }
+
   return (
     <main className="flex min-h-screen bg-gray-950 w-full flex-col items-center">
-      <header className="h-20 bg-gray-850 w-full ">
-        <div className="container mx-auto flex items-center h-full justify-between">
-          <h1 className="text-3xl font-bold text-white">
-            Konoha<span className="text-4xl text-orange-500">Cliente</span>
-          </h1>
-
-          <div className="flex flex-row justify-between items-center gap-2">
-            <div className="flex flex-col items-end border-r border-newBlue-100 pr-2">
-              <strong className="text-orange-500 font-semibold">
-                Ramiro Nzau
-              </strong>
-              <span className="text-xs text-gray-100">
-                ramironzau@gmail.com
-              </span>
-            </div>
-
-            <Avatar className="border border-newBlue-100">
-              <AvatarImage src="/avatar.png" />
-              <AvatarFallback className="text-newBlue-100 font-bold">
-                {`${String('Ramiro Nzau').split(' ')[0][0]}${String('Ramiro Nzau').split(' ')[1][0]}`}
-              </AvatarFallback>
-            </Avatar>
-          </div>
-        </div>
-      </header>
+      <Header />
       <section className="w-full h-[500px]">
         <div className="relative h-full top-0">
           <div className="absolute w-full flex items-center justify-center h-full bg-black/60">
@@ -53,19 +59,17 @@ export default async function Home({
         </div>
       </section>
 
-      <section className="w-full ">
+      <div className="w-full ">
         <div className="max-w-7xl mx-auto">
-          <div className="w-full bg-gray-850 -mt-28 z-20 relative p-10 rounded-lg">
+          <div className="w-full bg-gray-850  z-20  p-10 rounded-lg">
             {/* <FolderFilter /> */}
             <Suspense fallback="loading...">
               <FolderList />
             </Suspense>
-            <Suspense fallback="loading...">
-              <Galery folderId={searchParams.folder} />
-            </Suspense>
+            <Galery images={newImages} />
           </div>
         </div>
-      </section>
+      </div>
     </main>
   )
 }
