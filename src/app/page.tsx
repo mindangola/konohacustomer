@@ -1,9 +1,10 @@
+import Modal from '@/components/Modal'
 import { FolderList } from '@/components/app/Home/FolderList'
 import { Galery } from '@/components/app/Home/Galery'
+import { Hero } from '@/components/app/Home/Hero'
 import { Header } from '@/components/app/shared/Header'
 import { FetchApi, Image as ImageType } from '@/services/fetch'
 import generateRGBDataUrl from '@/utils/generateBlurPlaceholder'
-import Image from 'next/image'
 import { Suspense } from 'react'
 
 interface NewImages extends ImageType {
@@ -16,7 +17,9 @@ export default async function Home({
   searchParams: { folder: string }
 }) {
   const fetchApi = new FetchApi()
-  const images = await fetchApi.getImages(searchParams.folder)
+  const imagesResponse = await fetchApi.getImages(searchParams.folder)
+
+  const images = imagesResponse.length ? imagesResponse : []
 
   const blurImagePromises = images?.map(() => {
     function getRandomRGB() {
@@ -42,32 +45,17 @@ export default async function Home({
   return (
     <main className="flex min-h-screen bg-gray-950 w-full flex-col items-center">
       <Header />
-      <section className="w-full h-[500px]">
-        <div className="relative h-full top-0">
-          <div className="absolute w-full flex items-center justify-center h-full bg-black/60">
-            <h2 className="text-white font-bold text-4xl mb-10">
-              Casamento do Anifa
-            </h2>
-          </div>
-          <Image
-            src="/pro2/17.jpeg"
-            alt=""
-            width={2000}
-            height={1800}
-            className="h-full object-cover"
-          />
-        </div>
-      </section>
-
+      <Hero imageUrl={images[2]?.imageUrl} folderName="Casamento" />
       <div className="w-full ">
         <div className="max-w-7xl mx-auto">
-          <div className="w-full bg-gray-850  z-20  p-10 rounded-lg">
+          <div className="w-full bg-gray-850 relative -mt-28  z-20  p-10 rounded-lg">
             {/* <FolderFilter /> */}
             <Suspense fallback="loading...">
-              <FolderList />
+              <FolderList activeFolder={searchParams.folder} />
             </Suspense>
             <Galery images={newImages} />
           </div>
+          <Modal images={newImages} />
         </div>
       </div>
     </main>

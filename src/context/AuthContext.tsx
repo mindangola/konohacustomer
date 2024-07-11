@@ -1,9 +1,4 @@
-import {
-  ReactNode,
-  createContext,
-  useContext,
-  useState
-} from 'react'
+import { ReactNode, createContext, useContext, useState } from 'react'
 
 import { api } from '@/services/api'
 import { useRouter } from 'next/navigation'

@@ -37,7 +37,7 @@ export function Header() {
                 asChild
                 className="bg-transparent focus:bg-transparent"
               >
-                <div className="flex flex-row justify-between items-center gap-2">
+                <div className="flex w-auto flex-row justify-between items-center gap-2">
                   <Avatar className="bg-transparent border border-orange-500">
                     <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
                     <AvatarFallback className="text-n font-bold">

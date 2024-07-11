@@ -1,9 +1,8 @@
 'use client'
 
-import Modal from '@/components/Modal'
+import { useModal } from '@/context/ModalContext'
 import { Image as ImageType } from '@/services/fetch'
 import Image from 'next/image'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 interface NewImages extends ImageType {
   blurDataUrl: string
@@ -14,25 +13,9 @@ interface GaleryProps {
 }
 
 export function Galery({ images: ImagesResponse }: GaleryProps) {
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
-  const { replace } = useRouter()
+  const { handleOpenModal } = useModal()
 
   const images = ImagesResponse?.length ? ImagesResponse : []
-
-  function handleOpenModal(value: boolean) {
-    const params = new URLSearchParams(searchParams)
-
-    const fieldValue = value
-
-    if (fieldValue) {
-      params.set('modalOpen', String(fieldValue))
-    } else {
-      params.delete('modalOpen')
-    }
-
-    replace(`${pathname}?${params.toString()}`)
-  }
 
   return (
     <>
@@ -42,7 +25,7 @@ export function Galery({ images: ImagesResponse }: GaleryProps) {
             {images.map((image) => (
               <button
                 key={image.id}
-                onClick={() => handleOpenModal(true)}
+                onClick={handleOpenModal}
                 className="w-full h-[260px] overflow-hidden rounded-md"
               >
                 <Image
@@ -65,7 +48,6 @@ export function Galery({ images: ImagesResponse }: GaleryProps) {
           </div>
         )}
       </div>
-      <Modal images={images} />
     </>
   )
 }

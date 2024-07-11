@@ -1,12 +1,12 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { useModal } from '@/context/ModalContext'
 import generateRGBDataUrl from '@/utils/generateBlurPlaceholder'
 import { EmblaOptionsType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'
 import { LucideChevronLeft, LucideChevronRight, LucideX } from 'lucide-react'
 import Image from 'next/image'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import '../../styles/embla.css'
 import { Thumb } from './Thumbnail'
@@ -35,9 +35,8 @@ export function CarouselComponent({
   currentImage,
 }: CarouselComponentProps) {
   const options: EmblaOptionsType = {}
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
-  const { replace } = useRouter()
+
+  const { handleCloseModal } = useModal()
 
   const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -96,14 +95,6 @@ export function CarouselComponent({
 
     return generateRGBDataUrl(r, g, b)
   })
-
-  function handleCloseModal() {
-    const params = new URLSearchParams(searchParams)
-
-    params.delete('modalOpen')
-
-    replace(`${pathname}?${params.toString()}`)
-  }
 
   return (
     <div className="embla h-full w-full relative">
