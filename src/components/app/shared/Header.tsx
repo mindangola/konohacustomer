@@ -14,32 +14,32 @@ import { Power, UserCircleGear } from '@phosphor-icons/react'
 import Link from 'next/link'
 
 export function Header() {
-  const { signOut } = useAuth()
+  const { signOut, user } = useAuth()
 
   return (
     <header className="h-20 bg-gray-850 w-full ">
-      <div className="container mx-auto flex items-center h-full justify-between">
+      <div className="w-full px-6 sm:container  mx-auto flex items-center h-full justify-between">
         <h1 className="text-3xl font-bold text-white">
           Konoha<span className="text-4xl text-orange-500">Cliente</span>
         </h1>
 
         <div className="flex flex-row justify-between items-center gap-2">
-          <div className="flex flex-col items-end border-r border-newBlue-100 pr-2">
+          <div className="hidden sm:flex flex-col items-end border-r border-newBlue-100 pr-2">
             <strong className="text-orange-500 font-semibold">
-              Ramiro Nzau
+              {user?.name}
             </strong>
-            <span className="text-xs text-gray-100">ramironzau@gmail.com</span>
+            <span className="text-xs text-gray-100"> {user?.email} </span>
           </div>
 
-          <Menubar className="border-none dark:bg-gray-850">
+          <Menubar className="border-none bg-transparent focus:bg-transparent dark:bg-gray-850">
             <MenubarMenu>
               <MenubarTrigger
                 asChild
-                className="bg-transparent focus:bg-transparent"
+                className="bg-transparent p-0 w-auto hover:bg-transparent flex-none focus:bg-transparent"
               >
-                <div className="flex w-auto flex-row justify-between items-center gap-2">
-                  <Avatar className="bg-transparent border border-orange-500">
-                    <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" />
+                <div className="flex flex-row justify-between items-center">
+                  <Avatar className="bg-transparent focus:bg-transparent w-12 h-12 border-2 border-orange-500">
+                    <AvatarImage src={String(user?.url)} />
                     <AvatarFallback className="text-n font-bold">
                       MS
                     </AvatarFallback>
@@ -48,7 +48,7 @@ export function Header() {
               </MenubarTrigger>
               <MenubarContent
                 align="end"
-                className="  dark:border-gray-900 shadow-sm shadow-gray-600"
+                className="dark:border-gray-900 shadow-sm shadow-gray-600"
               >
                 <MenubarItem
                   asChild

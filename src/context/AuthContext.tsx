@@ -1,4 +1,10 @@
-import { ReactNode, createContext, useContext, useState } from 'react'
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 
 import { api } from '@/services/api'
 import { useRouter } from 'next/navigation'
@@ -14,17 +20,44 @@ type SignInData = {
   password: string
 }
 
+type User = {
+  id: string
+  name: string
+  username: string
+  email: string
+  phone_number: string
+  status: string
+  avatar_url: string | null
+  url: string
+  tenant_id: string
+  created_at: Date
+}
+
 interface AuthContextData {
   signIn: ({ email, password }: SignInData) => void
   signOut: () => void
   isLoading: boolean
+  user: User | null
 }
 
 const AuthContext = createContext({} as AuthContextData)
 
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
   const { push, refresh } = useRouter()
+  const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    async function getUser() {
+      const userResponse = await api.get('customer/me')
+
+      const user = userResponse.data
+
+      setUser(user)
+    }
+
+    getUser()
+  }, [])
 
   async function signIn({ email, password }: SignInData) {
     try {
@@ -32,6 +65,8 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       const response = await api.post('customer/login', { email, password })
 
       const { token } = response.data
+
+      console.log(token)
 
       setCookie(undefined, 'konahacustomer.token', token, {
         maxAge: 60 * 60 * 24 * 30,
@@ -66,7 +101,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={{ signIn, signOut, isLoading }}>
+    <AuthContext.Provider value={{ signIn, signOut, isLoading, user }}>
       {children}
     </AuthContext.Provider>
   )

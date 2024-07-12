@@ -5,7 +5,6 @@ import { Hero } from '@/components/app/Home/Hero'
 import { Header } from '@/components/app/shared/Header'
 import { FetchApi, Image as ImageType } from '@/services/fetch'
 import generateRGBDataUrl from '@/utils/generateBlurPlaceholder'
-import { Suspense } from 'react'
 
 interface NewImages extends ImageType {
   blurDataUrl: string
@@ -18,6 +17,8 @@ export default async function Home({
 }) {
   const fetchApi = new FetchApi()
   const imagesResponse = await fetchApi.getImages(searchParams.folder)
+
+  const folders = await fetchApi.getFolder()
 
   const images = imagesResponse.length ? imagesResponse : []
 
@@ -47,12 +48,10 @@ export default async function Home({
       <Header />
       <Hero imageUrl={images[2]?.imageUrl} folderName="Casamento" />
       <div className="w-full ">
-        <div className="max-w-7xl mx-auto">
-          <div className="w-full bg-gray-850 relative -mt-28  z-20  p-10 rounded-lg">
+        <div className="md:container mx-auto">
+          <div className="w-full bg-gray-850 relative -mt-10 md:-mt-28  z-20 px-6  md:px-8 py-10 rounded-lg">
             {/* <FolderFilter /> */}
-            <Suspense fallback="loading...">
-              <FolderList activeFolder={searchParams.folder} />
-            </Suspense>
+            <FolderList folders={folders} activeFolder={searchParams.folder} />
             <Galery images={newImages} />
           </div>
           <Modal images={newImages} />

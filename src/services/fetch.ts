@@ -1,8 +1,5 @@
 import { cookies } from 'next/headers'
 
-const cookieStore = cookies()
-const token = cookieStore.get('konahacustomer.token')?.value
-
 type Folder = {
   id: string
   name: string
@@ -29,6 +26,9 @@ const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT
 
 export class FetchApi {
   async getFolder() {
+    const cookieStore = cookies()
+    const token = cookieStore.get('konahacustomer.token')?.value
+
     const foldersResponse = await fetch(`${API_ENDPOINT}/customer/folders`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -41,6 +41,9 @@ export class FetchApi {
   }
 
   async getImages(folderId: string) {
+    const cookieStore = cookies()
+    const token = cookieStore.get('konahacustomer.token')?.value
+
     const foldersResponse = await fetch(
       `${API_ENDPOINT}/customer/files/${folderId}`,
       {
