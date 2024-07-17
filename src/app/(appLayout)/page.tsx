@@ -46,7 +46,7 @@ export default async function Home({
   return (
     <main className="flex min-h-screen bg-gray-950 w-full flex-col items-center">
       <Header />
-      <Hero imageUrl={images[2]?.imageUrl} folderName="Casamento" />
+      <Hero imageUrl={images[5]?.imageUrl} folderName="Casamento" />
       <div className="w-full ">
         <div className="md:container mx-auto">
           <div className="w-full bg-gray-850 relative -mt-10 md:-mt-28  z-20 px-6  md:px-8 py-10 rounded-lg">
